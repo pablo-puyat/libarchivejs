@@ -2,13 +2,13 @@ FROM trzeci/emscripten:1.39.4-ubuntu
 
 WORKDIR /opt
 
-ADD https://github.com/libarchive/libarchive/releases/download/v3.6.2/libarchive-3.6.2.zip /opt
+ADD https://github.com/libarchive/libarchive/releases/download/v3.7.1/libarchive-3.7.1.zip /opt
 ADD https://github.com/madler/zlib/archive/v1.2.11.zip /opt
 ADD https://netix.dl.sourceforge.net/project/lzmautils/xz-5.2.4.tar.gz /opt
 ADD https://netix.dl.sourceforge.net/project/bzip2/bzip2-1.0.6.tar.gz /opt
 ADD https://www.openssl.org/source/openssl-1.0.2s.tar.gz /opt
 
-RUN unzip /opt/libarchive-3.6.2.zip && rm /opt/libarchive-3.6.2.zip && \
+RUN unzip /opt/libarchive-3.7.1.zip && rm /opt/libarchive-3.7.1.zip && \
     unzip /opt/v1.2.11.zip && rm /opt/v1.2.11.zip && \
     tar xf /opt/xz-5.2.4.tar.gz && rm /opt/xz-5.2.4.tar.gz && \
     tar xf /opt/bzip2-1.0.6.tar.gz && rm /opt/bzip2-1.0.6.tar.gz && \
@@ -37,12 +37,12 @@ RUN cd /opt/xz-5.2.4 && emconfigure ./configure --disable-assembler --enable-thr
     emmake make 2>&1 | tee make.out && emmake make install
 
 # compile libarchive to LLVM
-WORKDIR /opt/libarchive-3.6.2
-RUN cd /opt/libarchive-3.6.2 && emconfigure ./configure --enable-static --disable-shared --enable-bsdtar=static --enable-bsdcat=static \
+WORKDIR /opt/libarchive-3.7.1
+RUN cd /opt/libarchive-3.7.1 && emconfigure ./configure --enable-static --disable-shared --disable-bsdunzip --enable-bsdtar=static --enable-bsdcat=static \
     --enable-bsdcpio=static --enable-posix-regex-lib=libc \
-    --disable-xattr --disable-acl --without-nettle --without-lzo2 \
+    --disable-xattr --without-bsdunzip --disable-acl --without-nettle --without-lzo2 \
     --without-cng  --without-lz4 \
-    --without-xml2 --without-expat 2>&1 | tee conf.out && \
+    --without-xml2 --without-expat --without-bz2lib 2>&1 | tee conf.out && \
     emmake make 2>&1 | tee make.out && emmake make install
 
 #--without-openssl
