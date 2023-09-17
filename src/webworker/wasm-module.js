@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import libarchive from './wasm-gen/libarchive.js';
+import libarchive from './wasm-gen/libarchive.worker.js';
 
 export class WasmModule{
     constructor(){
